@@ -18,13 +18,13 @@ jobs:
         uses: msys2/setup-msys2@v2
         with:
           msystem: UCRT64
-          update: true
+          # update: true
           install: mingw-w64-ucrt-x86_64-gcc
 
       - name: Build
         run: |
           g++ --version
-          g++ -o hello.exe hello.cpp
+          g++ -o hello.exe hello.cpp -static-libstdc++
           ./hello.exe
 
       - name: Store
@@ -44,17 +44,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install MSYS UCRT
+      - name: Install MSYS CLANG64
         uses: msys2/setup-msys2@v2
         with:
           msystem: CLANG64
-          update: true
+          # update: true
           install: mingw-w64-clang-x86_64-gcc-compat
 
       - name: Build
         run: |
           g++ --version
-          g++ -o hello.exe hello.cpp
+          g++ -o hello.exe hello.cpp -Wl,-Bstatic -lc++ -Wl,-Bdynamic
           ./hello.exe
 
       - name: Store
