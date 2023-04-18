@@ -1,0 +1,65 @@
+name: Build
+
+on: workflow_dispatch
+
+jobs:
+
+  build-ucrt:
+
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install MSYS UCRT
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: mingw-w64-ucrt-x86_64-gcc
+
+      - name: Build
+        run: |
+          g++ --version
+          g++ -o hello.exe hello.cpp
+          ./hello.exe
+
+      - name: Store
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-ucrt
+          path: hello.exe
+
+
+  build-clang:
+
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install MSYS UCRT
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: CLANG64
+          update: true
+          install: mingw-w64-clang-x86_64-gcc-compat
+
+      - name: Build
+        run: |
+          g++ --version
+          g++ -o hello.exe hello.cpp
+          ./hello.exe
+
+      - name: Store
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-clang64
+          path: hello.exe
+
